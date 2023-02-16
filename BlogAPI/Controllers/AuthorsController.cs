@@ -34,7 +34,7 @@ public class AuthorsController : ControllerBase
     {
         if (_authorsRepository.Get(id).HasValue)
         {
-            return Ok(_authorsRepository.Get(id).Value);
+            return Ok(_authorsRepository.Get(id).ReadValue);
         }
 
         return NotFound();
@@ -55,14 +55,14 @@ public interface IAuthorsRepository
 public class GetAuthorResult
 {
     public bool HasValue { get; } = false;
-    public Author Value { get; } = EmptyAuthor();
+    public Author ReadValue { get; } = EmptyAuthor();
 
     private GetAuthorResult(Author author, bool hasValue)
     {
         if (hasValue)
         {
             HasValue = true;
-            Value = author;
+            ReadValue = author;
         }
     }
 
@@ -75,20 +75,32 @@ public class GetAuthorResult
 
 public class AuthorsRepository : IAuthorsRepository
 {
-    public Author Save(Author author)
+    private List<Author> _allAuthors;
+    public AuthorsRepository()
     {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Author> GetAll()
-    {
-        return new[]
+        _allAuthors = new List<Author>()
         {
             new Author {FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
             new Author {FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
             new Author {FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"}
+        };
+    }
+    public Author Save(Author newAuthor)
+    {
+        var author = new Author()
+        {
+            Id = newAuthor.Id,
+            FirstName = newAuthor.FirstName,
+            MiddleName = newAuthor.MiddleName,
+            LastName = newAuthor.LastName
+        };
+        _allAuthors.Add(author);
+        return author;
+    }
 
-        }.ToList();
+    public IEnumerable<Author> GetAll()
+    {
+        return _allAuthors;
     }
     
     public GetAuthorResult Get(int id)
@@ -118,8 +130,8 @@ public class AuthorsRepository : IAuthorsRepository
             
             return GetAuthorResult.Some(new Author
             {
-                FirstName = "Forbes",
-                MiddleName = "Jeff",
+                FirstName = "Jeff",
+                MiddleName = "Bezos",
                 LastName = "Arthor"
             });
         }
