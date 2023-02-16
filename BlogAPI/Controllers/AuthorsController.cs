@@ -49,9 +49,9 @@ public class AuthorsRepository : IAuthorsRepository
     {
         _allAuthors = new List<Author>()
         {
-            new Author {FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
-            new Author {FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
-            new Author {FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"}
+            new Author {Id = 1, FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
+            new Author {Id = 2, FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
+            new Author {Id = 3, FirstName = "Jeff", MiddleName = "J.", LastName = "Bezzos"}
         };
     }
     public Author Save(Author newAuthor)
