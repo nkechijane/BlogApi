@@ -23,17 +23,21 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Save(AuthorSaveModel author)
+    public IActionResult Save(Author author)
     {
         var newlySavedAuthor = _authorsRepository.Save(author);
         return Ok(newlySavedAuthor);
     }
 
-    [HttpGet]
-    public IActionResult Get(int id)
+    [HttpGet("author/{id}")]
+    public IActionResult Get([FromRoute] int id)
     {
-        var response = _authorsRepository.Get(id);
-        return Ok(response);
+        if (_authorsRepository.Get(id).HasValue)
+        {
+            return Ok(_authorsRepository.Get(id).Value);
+        }
+
+        return NotFound();
     }
 }
 
@@ -43,14 +47,35 @@ public class AuthorSaveModel
 
 public interface IAuthorsRepository
 {
-    Author Save(AuthorSaveModel author);
+    Author Save(Author author);
     IEnumerable<Author> GetAll();
-    object Get(int id);
+    GetAuthorResult Get(int id);
+}
+
+public class GetAuthorResult
+{
+    public bool HasValue { get; } = false;
+    public Author Value { get; } = EmptyAuthor();
+
+    private GetAuthorResult(Author author, bool hasValue)
+    {
+        if (hasValue)
+        {
+            HasValue = true;
+            Value = author;
+        }
+    }
+
+    public static GetAuthorResult None() => new GetAuthorResult(EmptyAuthor(), false);
+
+    public static GetAuthorResult Some(Author author) => new GetAuthorResult(author, true);
+
+    private static Author EmptyAuthor() => new();
 }
 
 public class AuthorsRepository : IAuthorsRepository
 {
-    public Author Save(AuthorSaveModel author)
+    public Author Save(Author author)
     {
         throw new NotImplementedException();
     }
@@ -59,21 +84,46 @@ public class AuthorsRepository : IAuthorsRepository
     {
         return new[]
         {
-            new Author {Id = 0, FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
-            new Author {Id = 1, FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
-            new Author {Id = 2, FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"}
+            new Author {FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
+            new Author {FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
+            new Author {FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"}
 
         }.ToList();
     }
-
-    public object Get(int id)
+    
+    public GetAuthorResult Get(int id)
     {
-        return new Author()
+        if (id == 1)
         {
-            Id = 1,
-            FirstName = "Forbes",
-            MiddleName = "Doe",
-            LastName = "Effiong"
-        };
+            return GetAuthorResult.Some(new Author
+            {
+                FirstName = "Forbes",
+                MiddleName = "Doe",
+                LastName = "Effiong"
+            });
+        }
+
+        if (id == 2)
+        {
+            return GetAuthorResult.Some(new Author
+            {
+                FirstName = "Forbes",
+                MiddleName = "Jeff",
+                LastName = "Arthor"
+            });
+        }
+        
+        if (id == 3)
+        {
+            
+            return GetAuthorResult.Some(new Author
+            {
+                FirstName = "Forbes",
+                MiddleName = "Jeff",
+                LastName = "Arthor"
+            });
+        }
+
+        return GetAuthorResult.None();
     }
 }
