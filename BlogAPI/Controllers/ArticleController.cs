@@ -23,4 +23,19 @@ public class ArticleController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost]
+    public IActionResult Add([FromBody]Article payload)
+    {
+        var article = new Article()
+        {
+            Id = payload.Id,
+            Title = payload.Title,
+            Body = payload.Body,
+            Published = payload.Published,
+            LastEdited = payload.LastEdited
+        };
+        _articleRepository.Add(article);
+        return Ok(article);
+    }
+
 }

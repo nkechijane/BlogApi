@@ -25,4 +25,10 @@ public class ArticleRepository : IArticleRepository
     {
         return _allArticles;
     }
+
+    public Article Add(Article article)
+    {
+        _allArticles.Add(article);
+        return article;
+    }
 }
