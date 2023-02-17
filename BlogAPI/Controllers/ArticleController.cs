@@ -28,7 +28,7 @@ public class ArticleController : ControllerBase
     {
         var article = new Article()
         {
-            Id = payload.Id,
+            Id = payload.Id, 
             Title = payload.Title,
             Body = payload.Body,
             Published = payload.Published,
@@ -37,5 +37,13 @@ public class ArticleController : ControllerBase
         _articleRepository.Add(article);
         return Ok(article);
     }
+
+    [HttpGet("{id}")]
+    public IActionResult Get(int id)
+    {
+        var response = _articleRepository.Get(id);
+        return Ok(response);
+    }
+    
 
 }

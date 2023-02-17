@@ -31,4 +31,10 @@ public class ArticleRepository : IArticleRepository
         _allArticles.Add(article);
         return article;
     }
+
+    public Article Get(int id)
+    {
+       var article = _allArticles.FirstOrDefault(a => a.Id == id);
+       return article;
+    }
 }
