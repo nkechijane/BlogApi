@@ -23,9 +23,9 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Save([FromBody]Author author)
+    public IActionResult Save([FromBody]Author payload)
     {
-        var newlySavedAuthor = _authorsRepository.Save(author);
+        var newlySavedAuthor = _authorsRepository.Save(payload);
         return Ok(newlySavedAuthor);
     }
 
@@ -35,12 +35,20 @@ public class AuthorsController : ControllerBase
         var author = _authorsRepository.Get(id);
         return Ok(author);
     }
+
+    [HttpPut]
+    public IActionResult Update([FromBody]Author payload)
+    {
+        var updatedAuthor = _authorsRepository.Update(payload);
+        return Ok(updatedAuthor);
+    }
 }
 public interface IAuthorsRepository
 {
     Author Save(Author author);
     IEnumerable<Author> GetAll();
     Author Get(int id);
+    Author Update(Author newAuthor);
 }
 public class AuthorsRepository : IAuthorsRepository
 {
@@ -76,5 +84,17 @@ public class AuthorsRepository : IAuthorsRepository
     {
         var author = _allAuthors.FirstOrDefault(a => a.Id == id);
         return author ?? new Author();
+    }
+
+    public Author Update(Author newAuthor)
+    {
+        foreach (var oldAuthor in _allAuthors.Where(a=> a.Id==newAuthor.Id))
+        {
+            oldAuthor.FirstName = newAuthor.FirstName;
+            oldAuthor.LastName = newAuthor.LastName;
+            oldAuthor.MiddleName = newAuthor.MiddleName;
+        }
+        
+        return newAuthor;
     }
 }
