@@ -44,6 +44,11 @@ public class ArticleController : ControllerBase
         var response = _articleRepository.Get(id);
         return Ok(response);
     }
-    
 
+    [HttpPut]
+    public IActionResult Update([FromBody]Article payload)
+    {
+        var updatedArticle = _articleRepository.Update(payload);
+        return Ok(updatedArticle);
+    }
 }

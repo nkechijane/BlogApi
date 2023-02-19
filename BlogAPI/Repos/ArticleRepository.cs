@@ -10,12 +10,12 @@ public class ArticleRepository : IArticleRepository
     {
         _allArticles = new List<Article>()
         {
-            new Article
+            new()
             {
                 Id = 1, Title = "The GirlChild", Body = "Train a child, train a nation", Published = DateTime.Now
             },
             
-            new Article
+            new()
             {
                 Id = 1, Title = "Dark", Body = "Dark nation", Published = DateTime.Now
             }
@@ -28,6 +28,7 @@ public class ArticleRepository : IArticleRepository
 
     public Article Add(Article article)
     {
+        article.Published = DateTime.Now;
         _allArticles.Add(article);
         return article;
     }
@@ -36,5 +37,17 @@ public class ArticleRepository : IArticleRepository
     {
        var article = _allArticles.FirstOrDefault(a => a.Id == id);
        return article;
+    }
+    
+    public Article Update(Article newArticle)
+    {
+        foreach (var article in _allArticles.Where(a => a.Id == newArticle.Id))
+        {
+            article.LastEdited = DateTime.Now;
+            article.Title = newArticle.Title;
+            article.Body = newArticle.Body;
+            article.Published = newArticle.Published;
+        }
+        return newArticle;
     }
 }

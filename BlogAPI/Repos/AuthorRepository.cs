@@ -11,9 +11,9 @@ public class AuthorRepository : IAuthorRepository
     {
         _allAuthors = new List<Author>()
         {
-            new Author {Id = 1, FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
-            new Author {Id = 2, FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
-            new Author {Id = 3, FirstName = "Jeff", MiddleName = "J.", LastName = "Bezzos"}
+            new() {Id = 1, FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
+            new() {Id = 2, FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
+            new() {Id = 3, FirstName = "Jeff", MiddleName = "J.", LastName = "Bezzos"}
         };
     }
 
