@@ -22,7 +22,7 @@ public class AuthorRepository : IAuthorRepository
     {
         var author = new Author()
         {
-            Id = new Guid(),
+            Id = Guid.NewGuid(),
             FirstName = newAuthor.FirstName,
             MiddleName = newAuthor.MiddleName,
             LastName = newAuthor.LastName

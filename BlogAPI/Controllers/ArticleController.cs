@@ -1,6 +1,5 @@
 using BlogAPI.Models;
 using BlogAPI.Repos;
-using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.Controllers;
@@ -24,29 +23,21 @@ public class ArticleController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add([FromBody]Article payload)
+    public IActionResult Add([FromBody]SaveArticleModel payload)
     {
-        var article = new Article()
-        {
-            Id = payload.Id, 
-            Title = payload.Title,
-            Body = payload.Body,
-            Published = payload.Published,
-            LastEdited = payload.LastEdited
-        };
-        _articleRepository.Add(article);
-        return Ok(article);
+        _articleRepository.Add(payload);
+        return Ok(payload);
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public IActionResult Get(Guid id)
     {
         var response = _articleRepository.Get(id);
         return Ok(response);
     }
 
     [HttpPut]
-    public IActionResult Update([FromBody]Article payload)
+    public IActionResult Update([FromBody]ArticleModel payload)
     {
         var updatedArticle = _articleRepository.Update(payload);
         return Ok(updatedArticle);

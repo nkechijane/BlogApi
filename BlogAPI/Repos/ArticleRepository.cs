@@ -12,41 +12,72 @@ public class ArticleRepository : IArticleRepository
         {
             new()
             {
-                Id = 1, Title = "The GirlChild", Body = "Train a child, train a nation", Published = DateTime.Now
+                Id = Guid.NewGuid(), Title = "The GirlChild", Body = "Train a child, train a nation", Published = DateTime.Now
             },
             
             new()
             {
-                Id = 1, Title = "Dark", Body = "Dark nation", Published = DateTime.Now
+                Id = Guid.NewGuid(), Title = "Dark", Body = "Dark nation", Published = DateTime.Now
             }
         };
     }
-    public IEnumerable<Article> GetAll()
+    public IEnumerable<ArticleModel> GetAll()
     {
-        return _allArticles;
+        var response = new List<ArticleModel>();
+        foreach (var article in _allArticles)
+        {
+            var tempresp = new ArticleModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Body = article.Body,
+                PublishedDate = article.Published
+            };
+            response.Add(tempresp);
+        }
+
+        return response;
     }
 
-    public Article Add(Article article)
+    public bool Add(SaveArticleModel newArticle)
     {
-        article.Published = DateTime.Now;
+        var article = new Article()
+        {
+            Id = Guid.NewGuid(),
+            Title = newArticle.Title,
+            Body = newArticle.Body,
+            Published = DateTime.Now
+        };
         _allArticles.Add(article);
-        return article;
+        return true;
     }
 
-    public Article Get(int id)
+    public ArticleModel Get(Guid id)
     {
        var article = _allArticles.FirstOrDefault(a => a.Id == id);
-       return article;
+       if (article != null)
+       {
+           var response = new ArticleModel()
+           {
+               Id = article.Id,
+               Title = article.Title,
+               Body = article.Body,
+               PublishedDate = DateTime.Now
+           };
+           return response;
+       }
+
+       return new ArticleModel();
     }
     
-    public Article Update(Article newArticle)
+    public ArticleModel Update(ArticleModel newArticle)
     {
         foreach (var article in _allArticles.Where(a => a.Id == newArticle.Id))
         {
             article.LastEdited = DateTime.Now;
             article.Title = newArticle.Title;
             article.Body = newArticle.Body;
-            article.Published = newArticle.Published;
+            article.Published = newArticle.PublishedDate;
         }
         return newArticle;
     }
