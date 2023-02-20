@@ -1,4 +1,5 @@
 using BlogAPI;
+using BlogAPI.DTOs;
 using BlogAPI.Models;
 
 namespace DefaultNamespace;

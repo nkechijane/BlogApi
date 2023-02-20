@@ -1,3 +1,4 @@
+using BlogAPI.DTOs;
 using BlogAPI.Models;
 using DefaultNamespace;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ public class AuthorsController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public IActionResult Get(Guid id)
     {
         var author = _authorRepository.Get(id);
