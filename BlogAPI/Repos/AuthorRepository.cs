@@ -11,37 +11,57 @@ public class AuthorRepository : IAuthorRepository
     {
         _allAuthors = new List<Author>()
         {
-            new() {Id = 1, FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
-            new() {Id = 2, FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
-            new() {Id = 3, FirstName = "Jeff", MiddleName = "J.", LastName = "Bezzos"}
+            new() {Id = Guid.NewGuid(), FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
+            new() {Id = Guid.NewGuid(),FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
+            new() {Id = Guid.NewGuid(),FirstName = "Jeff", MiddleName = "J.", LastName = "Bezzos"}
         };
     }
 
-    public Author Save(Author newAuthor)
+    public bool Save(SaveAuthorModel newAuthor)
     {
         var author = new Author()
         {
-            Id = newAuthor.Id,
+            Id = new Guid(),
             FirstName = newAuthor.FirstName,
             MiddleName = newAuthor.MiddleName,
             LastName = newAuthor.LastName
         };
         _allAuthors.Add(author);
-        return author;
+        return true;
     }
 
-    public IEnumerable<Author> GetAll()
+    public IEnumerable<AuthorModel> GetAll()
     {
-        return _allAuthors;
+        var response = new List<AuthorModel>();
+        foreach (var author in _allAuthors)
+        {
+            var tempresp = new AuthorModel()
+            {
+                Id = author.Id,
+                FirstName = author.FirstName,
+                LastName = author.LastName,
+                MiddleName = author.MiddleName
+            };
+            response.Add(tempresp);
+        }
+
+        return response;
     }
 
-    public Author Get(int id)
+    public AuthorModel Get(Guid id)
     {
         var author = _allAuthors.FirstOrDefault(a => a.Id == id);
-        return author ?? new Author();
+        var response = new AuthorModel()
+        {
+            Id = author.Id,
+            FirstName = author.FirstName,
+            LastName = author.LastName,
+            MiddleName = author.MiddleName
+        };
+        return response;
     }
 
-    public Author Update(Author newAuthor)
+    public AuthorModel Update(AuthorModel newAuthor)
     {
         foreach (var oldAuthor in _allAuthors.Where(a => a.Id == newAuthor.Id))
         {

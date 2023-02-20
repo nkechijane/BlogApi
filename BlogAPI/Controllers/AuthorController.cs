@@ -24,21 +24,21 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Save([FromBody]Author payload)
+    public IActionResult Save([FromBody]SaveAuthorModel payload)
     {
         var newlySavedAuthor = _authorRepository.Save(payload);
-        return Ok(newlySavedAuthor);
+        return Ok();
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public IActionResult Get(Guid id)
     {
         var author = _authorRepository.Get(id);
         return Ok(author);
     }
 
     [HttpPut]
-    public IActionResult Update([FromBody]Author payload)
+    public IActionResult Update([FromBody]AuthorModel payload)
     {
         var updatedAuthor = _authorRepository.Update(payload);
         return Ok(updatedAuthor);

@@ -1,12 +1,13 @@
+using BlogAPI;
 using BlogAPI.Models;
 
 namespace DefaultNamespace;
 
 public interface IAuthorRepository
 {
-    Author Save(Author author);
-    IEnumerable<Author> GetAll();
-    Author Get(int id);
-    Author Update(Author newAuthor);
+    bool Save(SaveAuthorModel author);
+    IEnumerable<AuthorModel> GetAll();
+    AuthorModel Get(Guid id);
+    AuthorModel Update(AuthorModel newAuthor);
 }
  
