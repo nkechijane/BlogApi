@@ -1,10 +1,11 @@
+using BlogAPI.DTOs;
 using BlogAPI.Models;
 
 namespace BlogAPI.Repos;
 
 public class ArticleRepository : IArticleRepository
 {
-    private List<Article> _allArticles;
+    protected List<Article> _allArticles;
 
     public ArticleRepository()
     {

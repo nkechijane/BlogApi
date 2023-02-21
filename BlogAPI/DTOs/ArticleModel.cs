@@ -1,4 +1,4 @@
-namespace BlogAPI.Models;
+namespace BlogAPI.DTOs;
 
 public class ArticleModel
 {
