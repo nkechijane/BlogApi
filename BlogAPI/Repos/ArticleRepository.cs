@@ -54,7 +54,7 @@ public class ArticleRepository : IArticleRepository
 
     public ArticleModel Get(Guid id)
     {
-       var article = _allArticles.FirstOrDefault(a => a.Id == id);
+       var article = _allArticles.FirstOrDefault(a => a.Id.CompareTo(id) == 0);
 
        if (article == null)
            return new ArticleModel();
@@ -71,7 +71,7 @@ public class ArticleRepository : IArticleRepository
     
     public ArticleModel Update(ArticleModel newArticle)
     {
-        foreach (var article in _allArticles.Where(a => a.Id == newArticle.Id))
+        foreach (var article in _allArticles.Where(a => a.Id.CompareTo(newArticle.Id) == 0))
         {
             article.LastEdited = DateTime.Now;
             article.Title = newArticle.Title;
