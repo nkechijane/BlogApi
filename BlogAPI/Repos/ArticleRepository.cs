@@ -5,7 +5,7 @@ namespace BlogAPI.Repos;
 
 public class ArticleRepository : IArticleRepository
 {
-    protected List<Article> _allArticles;
+    public List<Article> _allArticles;
 
     public ArticleRepository()
     {
