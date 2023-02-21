@@ -55,19 +55,14 @@ public class ArticleRepository : IArticleRepository
     public ArticleModel Get(Guid id)
     {
        var article = _allArticles.FirstOrDefault(a => a.Id == id);
-       if (article != null)
+       var response = new ArticleModel()
        {
-           var response = new ArticleModel()
-           {
-               Id = article.Id,
-               Title = article.Title,
-               Body = article.Body,
-               PublishedDate = DateTime.Now
-           };
-           return response;
-       }
-
-       return new ArticleModel();
+           Id = article.Id,
+           Title = article.Title,
+           Body = article.Body,
+           PublishedDate = DateTime.Now
+       };
+       return response;
     }
     
     public ArticleModel Update(ArticleModel newArticle)

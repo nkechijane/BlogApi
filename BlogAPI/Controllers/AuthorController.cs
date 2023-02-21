@@ -31,7 +31,7 @@ public class AuthorsController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id}")]
     public IActionResult Get(Guid id)
     {
         var author = _authorRepository.Get(id);
