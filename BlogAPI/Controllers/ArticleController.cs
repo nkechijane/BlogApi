@@ -25,15 +25,30 @@ public class ArticleController : ControllerBase
     [HttpPost]
     public IActionResult Add([FromBody]SaveArticleModel payload)
     {
-        _articleRepository.Add(payload);
-        return Ok(payload);
+        try
+        {
+            var response = _articleRepository.Add(payload);
+            return response ? Ok("sucessful") : BadRequest();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+        
     }
 
     [HttpGet("{id}")]
     public IActionResult Get(Guid id)
     {
-        var response = _articleRepository.Get(id);
-        return Ok(response);
+        try
+        {
+            var response = _articleRepository.Get(id);
+            return !string.IsNullOrEmpty(response.Body) ? Ok(response) : BadRequest("Please check the ID and try again.");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPut]
