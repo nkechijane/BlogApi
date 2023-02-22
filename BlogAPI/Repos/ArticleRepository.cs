@@ -9,19 +9,21 @@ public class ArticleRepository : IArticleRepository
 
     public ArticleRepository()
     {
-        _allArticles = new List<Article>()
+        _allArticles ??= new List<Article>()
         {
             new()
             {
-                Id = Guid.NewGuid(), Title = "The GirlChild", Body = "Train a child, train a nation", Published = DateTime.Now
+                Id = Guid.NewGuid(), Title = "The GirlChild", Body = "Train a child, train a nation",
+                Published = DateTime.Now
             },
-            
+
             new()
             {
                 Id = Guid.NewGuid(), Title = "Dark", Body = "Dark nation", Published = DateTime.Now
             }
         };
     }
+
     public IEnumerable<ArticleModel> GetAll()
     {
         var response = new List<ArticleModel>();
