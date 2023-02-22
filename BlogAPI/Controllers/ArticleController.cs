@@ -19,8 +19,15 @@ public class ArticleController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var response = _articleRepository.GetAll();
-        return Ok(response);
+        try
+        {
+            var response = _articleRepository.GetAll();
+            return response.Any() ? Ok(response) : Ok("No Article found");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost]
@@ -29,7 +36,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Add(payload);
-            return response ? Ok("sucessful") : BadRequest();
+            return response ? Ok("sucessful") : BadRequest("Unsuccessful!");
         }
         catch (Exception e)
         {
@@ -58,7 +65,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Update(payload);
-            return response ? Ok("Updated Successfully!") : BadRequest("Please check the ID and try again.");
+            return response ? Ok("Updated Successfully!") : BadRequest("Please check the payload and try again.");
         }
         catch (Exception e)
         {
