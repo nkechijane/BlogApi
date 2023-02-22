@@ -5,31 +5,26 @@ namespace BlogAPI.Repos;
 
 public class ArticleRepository : IArticleRepository
 {
-    public List<Article> _allArticles;
-
-    public ArticleRepository()
+    public List<Article> _allArticles = new()
     {
-        _allArticles ??= new List<Article>()
+        new()
         {
-            new()
-            {
-                Id = Guid.NewGuid(), Title = "The GirlChild", Body = "Train a child, train a nation",
-                Published = DateTime.Now
-            },
+            Id = Guid.NewGuid(), Title = "The GirlChild", Body = "Train a child, train a nation",
+            Published = DateTime.Now
+        },
 
-            new()
-            {
-                Id = Guid.NewGuid(), Title = "Dark", Body = "Dark nation", Published = DateTime.Now
-            }
-        };
-    }
+        new()
+        {
+            Id = Guid.NewGuid(), Title = "Dark", Body = "Dark nation", Published = DateTime.Now
+        }
+    };
 
     public IEnumerable<ArticleModel> GetAll()
     {
         var response = new List<ArticleModel>();
         foreach (var article in _allArticles)
         {
-            var tempresp = new ArticleModel()
+            var tempresp = new ArticleModel
             {
                 Id = article.Id,
                 Title = article.Title,
