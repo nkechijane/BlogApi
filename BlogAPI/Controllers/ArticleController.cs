@@ -55,7 +55,14 @@ public class ArticleController : ControllerBase
     [HttpPut]
     public IActionResult Update([FromBody]ArticleModel payload)
     {
-        var updatedArticle = _articleRepository.Update(payload);
-        return Ok(updatedArticle);
+        try
+        {
+            var response = _articleRepository.Update(payload);
+            return response ? Ok("Updated Successfully!") : BadRequest("Please check the ID and try again.");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

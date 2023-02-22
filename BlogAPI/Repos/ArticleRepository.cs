@@ -7,7 +7,6 @@ namespace BlogAPI.Repos;
 public class ArticleRepository : IArticleRepository
 {
     private readonly AppDbContext _dbContext;
-    public List<Article> _allArticles;
 
     public ArticleRepository(AppDbContext dbContext)
     {
@@ -48,12 +47,13 @@ public class ArticleRepository : IArticleRepository
             Published = DateTime.Now
         };
         _dbContext.Articles.Add(article);
+        _dbContext.SaveChanges();
         return true;
     }
 
     public ArticleModel Get(Guid id)
     {
-       var article = _allArticles.FirstOrDefault(a => a.Id.CompareTo(id) == 0);
+       var article = _dbContext.Articles.FirstOrDefault(a => a.Id.CompareTo(id) == 0);
 
        if (article == null)
            return new ArticleModel();
@@ -68,15 +68,17 @@ public class ArticleRepository : IArticleRepository
        return response;
     }
     
-    public ArticleModel Update(ArticleModel newArticle)
+    public bool Update(ArticleModel newArticle)
     {
-        foreach (var article in _allArticles.Where(a => a.Id.CompareTo(newArticle.Id) == 0))
-        {
-            article.LastEdited = DateTime.Now;
-            article.Title = newArticle.Title;
-            article.Body = newArticle.Body;
-            article.Published = newArticle.PublishedDate;
-        }
-        return newArticle;
+        var dbresult = _dbContext.Articles.FirstOrDefault(a => a.Id == newArticle.Id);
+            
+        if (dbresult == null)
+            return false;
+
+        dbresult.LastEdited = DateTime.Now;
+        dbresult.Title = newArticle.Title;
+        dbresult.Body = newArticle.Body;
+        _dbContext.Update(dbresult);
+        return _dbContext.SaveChanges() > 0;
     }
 }
