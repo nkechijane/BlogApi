@@ -17,7 +17,13 @@ public class ArticleRepository : IArticleRepository
     public IEnumerable<ArticleModel> GetAll()
     {
         var response = new List<ArticleModel>();
-        foreach (var article in _allArticles)
+
+        var allArticles = _dbContext.Articles;
+        
+        if (!allArticles.Any())
+            return new List<ArticleModel>();
+        
+        foreach (var article in allArticles)
         {
             var tempresp = new ArticleModel()
             {
@@ -41,7 +47,7 @@ public class ArticleRepository : IArticleRepository
             Body = newArticle.Body,
             Published = DateTime.Now
         };
-        _allArticles.Add(article);
+        _dbContext.Articles.Add(article);
         return true;
     }
 
