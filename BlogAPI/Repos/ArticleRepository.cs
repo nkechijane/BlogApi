@@ -1,3 +1,4 @@
+using BlogAPI.Context;
 using BlogAPI.DTOs;
 using BlogAPI.Models;
 
@@ -5,23 +6,12 @@ namespace BlogAPI.Repos;
 
 public class ArticleRepository : IArticleRepository
 {
+    private readonly AppDbContext _dbContext;
     public List<Article> _allArticles;
 
-    public ArticleRepository()
+    public ArticleRepository(AppDbContext dbContext)
     {
-        _allArticles ??= new List<Article>()
-        {
-            new()
-            {
-                Id = Guid.NewGuid(), Title = "The GirlChild", Body = "Train a child, train a nation",
-                Published = DateTime.Now
-            },
-
-            new()
-            {
-                Id = Guid.NewGuid(), Title = "Dark", Body = "Dark nation", Published = DateTime.Now
-            }
-        };
+        _dbContext = dbContext;
     }
 
     public IEnumerable<ArticleModel> GetAll()
