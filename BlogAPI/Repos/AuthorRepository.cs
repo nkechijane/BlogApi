@@ -1,3 +1,4 @@
+using BlogAPI.Context;
 using BlogAPI.DTOs;
 using BlogAPI.Models;
 using DefaultNamespace;
@@ -6,16 +7,12 @@ namespace BlogAPI.Repos;
 
 public class AuthorRepository : IAuthorRepository
 {
+    private readonly AppDbContext _dbContext;
     private List<Author> _allAuthors;
 
-    public AuthorRepository()
+    public AuthorRepository(AppDbContext dbContext)
     {
-        _allAuthors = new List<Author>()
-        {
-            new() {Id = Guid.NewGuid(), FirstName = "Tina", MiddleName = "Doe", LastName = "Effiong"},
-            new() {Id = Guid.NewGuid(),FirstName = "Forbes", MiddleName = "Jeff", LastName = "Arthor"},
-            new() {Id = Guid.NewGuid(),FirstName = "Jeff", MiddleName = "J.", LastName = "Bezzos"}
-        };
+        _dbContext = dbContext;
     }
 
     public bool Save(SaveAuthorModel newAuthor)
@@ -27,14 +24,20 @@ public class AuthorRepository : IAuthorRepository
             MiddleName = newAuthor.MiddleName,
             LastName = newAuthor.LastName
         };
-        _allAuthors.Add(author);
+        _dbContext.Add(author);
+        _dbContext.SaveChanges();
         return true;
     }
 
     public IEnumerable<AuthorModel> GetAll()
     {
         var response = new List<AuthorModel>();
-        foreach (var author in _allAuthors)
+        var allAuthors = _dbContext.Authors;
+        
+        if (!allAuthors.Any())
+            return new List<AuthorModel>();
+        
+        foreach (var author in _dbContext.Authors)
         {
             var tempresp = new AuthorModel()
             {
@@ -45,13 +48,15 @@ public class AuthorRepository : IAuthorRepository
             };
             response.Add(tempresp);
         }
-
         return response;
     }
 
     public AuthorModel Get(Guid id)
     {
-        var author = _allAuthors.FirstOrDefault(a => a.Id == id);
+        var author = _dbContext.Authors.FirstOrDefault(a => a.Id.CompareTo(id) == 0);
+        if (author == null)
+            return new AuthorModel();
+        
         var response = new AuthorModel()
         {
             Id = author.Id,
@@ -64,12 +69,17 @@ public class AuthorRepository : IAuthorRepository
 
     public AuthorModel Update(AuthorModel newAuthor)
     {
-        foreach (var oldAuthor in _allAuthors.Where(a => a.Id == newAuthor.Id))
+        var oldAuthor = _dbContext.Authors.FirstOrDefault(a => a.Id.CompareTo(newAuthor.Id) == 0);
+        if (oldAuthor != null)
         {
             oldAuthor.FirstName = newAuthor.FirstName;
             oldAuthor.LastName = newAuthor.LastName;
             oldAuthor.MiddleName = newAuthor.MiddleName;
+
+            _dbContext.Authors.Update(oldAuthor);
+            _dbContext.SaveChanges();
+            return newAuthor;
         }
-        return newAuthor;
+        return new AuthorModel();
     }
 }
