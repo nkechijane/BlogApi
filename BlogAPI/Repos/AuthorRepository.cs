@@ -8,8 +8,6 @@ namespace BlogAPI.Repos;
 public class AuthorRepository : IAuthorRepository
 {
     private readonly AppDbContext _dbContext;
-    private List<Author> _allAuthors;
-
     public AuthorRepository(AppDbContext dbContext)
     {
         _dbContext = dbContext;
