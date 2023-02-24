@@ -12,12 +12,12 @@ RUN dotnet build BlogAPI -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish BlogAPI -c Release -o /app/publish
-RUN dotnet new tool-manifest
-RUN dotnet tool install dotnet-ef
+#RUN dotnet new tool-manifest
+#RUN dotnet tool install dotnet-ef
 WORKDIR /app
 RUN dotnet build
 #RUN dotnet ef migrations add InitialCreate
-RUN dotnet ef database update
+#RUN dotnet ef database update
 
 FROM base AS final
 WORKDIR /app

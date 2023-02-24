@@ -3,15 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogAPI.Context
 {
-    public partial class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            
         }
         
         public DbSet<Article> Articles { get; set; }
         public DbSet<Author> Authors { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseInMemoryDatabase("BlogDb");
+        }
     }
 }

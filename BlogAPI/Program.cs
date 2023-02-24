@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseInMemoryDatabase("BlogDb"));
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
