@@ -1,23 +1,31 @@
 using BlogAPI.Context;
 using BlogAPI.DTOs;
 using BlogAPI.Models;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace BlogAPI.Repos;
 
 public class ArticleRepository : IArticleRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly IMemoryCache _memoryCache;
 
-    public ArticleRepository(AppDbContext dbContext)
+    public ArticleRepository(AppDbContext dbContext, IMemoryCache memoryCache)
     {
-        _dbContext = dbContext;
+        _memoryCache = memoryCache;
     }
 
     public IEnumerable<ArticleModel> GetAll()
     {
         var response = new List<ArticleModel>();
-
-        var allArticles = _dbContext.Articles;
+        var allArticles = new List<Article>();
+        foreach (var key in _memoryCache.GetKeys())
+        {
+            var tempArticle = JsonConvert.DeserializeObject<Article>(_memoryCache.Get<string>(key));
+            allArticles.Add(tempArticle);
+        }
+        
+        //var allArticles = AllArticles();
         
         if (!allArticles.Any())
             return new List<ArticleModel>();
@@ -46,17 +54,21 @@ public class ArticleRepository : IArticleRepository
             Body = newArticle.Body,
             Published = DateTime.Now
         };
-        _dbContext.Articles.Add(article);
-        _dbContext.SaveChanges();
+        var tempArticle = JsonConvert.SerializeObject(article);
+        
+        _memoryCache.Set(article.Id, tempArticle);
+        
         return true;
     }
 
     public ArticleModel Get(Guid id)
     {
-       var article = _dbContext.Articles.FirstOrDefault(a => a.Id.CompareTo(id) == 0);
+       var tempArticle = _memoryCache.Get<string>(id);
 
-       if (article == null)
+       if (tempArticle == null)
            return new ArticleModel();
+
+       var article = JsonConvert.DeserializeObject<Article>(tempArticle);
        
        var response = new ArticleModel()
        {
@@ -70,15 +82,21 @@ public class ArticleRepository : IArticleRepository
     
     public bool Update(ArticleModel newArticle)
     {
-        var dbresult = _dbContext.Articles.FirstOrDefault(a => a.Id == newArticle.Id);
-            
-        if (dbresult == null)
+        //var dbresult = _dbContext.Articles.FirstOrDefault(a => a.Id == newArticle.Id);
+        var tempArticle = _memoryCache.Get<string>(newArticle.Id);
+        if (tempArticle == null)
             return false;
+
+        var dbresult = JsonConvert.DeserializeObject<Article>(tempArticle);
 
         dbresult.LastEdited = DateTime.Now;
         dbresult.Title = newArticle.Title;
         dbresult.Body = newArticle.Body;
-        _dbContext.Update(dbresult);
-        return _dbContext.SaveChanges() > 0;
+        
+        _memoryCache.Remove(newArticle.Id);
+        _memoryCache.Set(newArticle.Id, dbresult);
+        //_dbContext.Update(dbresult);
+        //return _dbContext.SaveChanges() > 0;
+        return true;
     }
 }
