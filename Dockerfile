@@ -28,3 +28,5 @@ ENV CONN_STRING=EMPTY_BY_DEFAULT
 #RUN dotnet add package Microsoft.EntityFrameworkCore.Design
 #RUN dotnet ef database update BlogAPI.dll
 ENTRYPOINT ["dotnet", "BlogAPI.dll"]
+
+# docker run -it -p 3010:80 -e CONN_STRING=<your_con_string> <imagename> 

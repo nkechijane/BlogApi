@@ -10,7 +10,7 @@ public class ArticleRepository : IArticleRepository
 {
     private readonly IMemoryCache _memoryCache;
 
-    public ArticleRepository(AppDbContext dbContext, IMemoryCache memoryCache)
+    public ArticleRepository(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
     }
@@ -24,9 +24,9 @@ public class ArticleRepository : IArticleRepository
             var tempArticle = JsonConvert.DeserializeObject<Article>(_memoryCache.Get<string>(key));
             allArticles.Add(tempArticle);
         }
-        
-        //var allArticles = AllArticles();
-        
+
+        Task.WaitAll();
+
         if (!allArticles.Any())
             return new List<ArticleModel>();
         

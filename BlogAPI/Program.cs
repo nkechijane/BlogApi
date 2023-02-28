@@ -7,14 +7,14 @@ using Microsoft.Extensions.Caching.Memory;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseInMemoryDatabase("BlogDb"));
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseInMemoryDatabase("BlogDb"));
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+//builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
-builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

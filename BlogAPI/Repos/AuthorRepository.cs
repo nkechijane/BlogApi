@@ -5,7 +5,7 @@ using DefaultNamespace;
 
 namespace BlogAPI.Repos;
 
-public class AuthorRepository : IAuthorRepository
+/*public class AuthorRepository : IAuthorRepository
 {
     private readonly AppDbContext _dbContext;
     public AuthorRepository(AppDbContext dbContext)
@@ -80,4 +80,4 @@ public class AuthorRepository : IAuthorRepository
         }
         return new AuthorModel();
     }
-}
+}*/
