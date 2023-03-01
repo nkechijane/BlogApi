@@ -5,8 +5,5 @@ namespace BlogAPI.Repos;
 
 public interface IArticleRepository
 {
-    IEnumerable<ArticleModel> GetAll();
-    bool Add(SaveArticleModel article);
-    ArticleModel Get(Guid id);
-    bool Update(ArticleModel payload);
+    Task<IEnumerable<ArticleModel>> GetAll();
 }
