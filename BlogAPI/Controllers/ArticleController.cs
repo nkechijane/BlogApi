@@ -16,7 +16,7 @@ public class ArticleController : ControllerBase
         _articleRepository = articleRepository;
     }
 
-    [HttpGet]
+    /*[HttpGet]
     public IActionResult GetAll()
     {
         try
@@ -28,7 +28,7 @@ public class ArticleController : ControllerBase
         {
             return BadRequest(e.Message);
         }
-    }
+    }*/
 
     [HttpPost]
     public IActionResult Add([FromBody]SaveArticleModel payload)
@@ -36,7 +36,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Add(payload);
-            return response ? Ok("sucessful") : BadRequest("Unsuccessful!");
+            return !string.IsNullOrEmpty(response.Result) ? Ok(response.Result) : BadRequest("Unsuccessful!");
         }
         catch (Exception e)
         {
@@ -51,7 +51,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Get(id);
-            return !string.IsNullOrEmpty(response.Body) ? Ok(response) : BadRequest("Please check the ID and try again.");
+            return !string.IsNullOrEmpty(response.Result.Body) ? Ok(response.Result) : BadRequest("Please check the ID and try again.");
         }
         catch (Exception e)
         {
@@ -65,7 +65,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Update(payload);
-            return response ? Ok("Updated Successfully!") : BadRequest("Please check the payload and try again.");
+            return response.Result ? Ok("Updated Successfully!") : BadRequest("Please check the payload and try again.");
         }
         catch (Exception e)
         {

@@ -44,7 +44,7 @@ public class ArticleRepository : IArticleRepository
         return new List<ArticleModel>();
     }
 
-    public async Task<bool> Add(SaveArticleModel newArticle)
+    public async Task<string> Add(SaveArticleModel newArticle)
     {
         var article = new Article()
         {
@@ -55,13 +55,13 @@ public class ArticleRepository : IArticleRepository
         };
         await Save(article);
 
-        return true;
+        return article.Id.ToString();
     }
 
     public async Task<ArticleModel> Get(Guid id)
     {
         var article = GetArticleById(id.ToString()).Result;
-        if (string.IsNullOrEmpty(article.Body))
+        if (!string.IsNullOrEmpty(article.Body))
         {
             var response = new ArticleModel()
             {
@@ -96,9 +96,9 @@ public class ArticleRepository : IArticleRepository
         if ((articlesInRedis?.Count() ?? 0) > 0)
         {
             var articleString = Encoding.UTF8.GetString(articlesInRedis);
-            var allArticles = JsonConvert.DeserializeObject<List<Article>>(articleString);
+            var allArticles = JsonConvert.DeserializeObject<Article>(articleString);
 
-            return allArticles.FirstOrDefault();
+            return allArticles;
         }
 
         return new Article();
