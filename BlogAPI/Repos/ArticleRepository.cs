@@ -60,4 +60,27 @@ public class ArticleRepository : IArticleRepository
         
         return true;
     }
+
+    public async Task<ArticleModel> Get(Guid id)
+    {
+        byte[] articlesInRedis = await _cache.GetAsync("Article");
+        if ((articlesInRedis?.Count() ?? 0) > 0) 
+        {
+            var articleString = Encoding.UTF8.GetString(articlesInRedis);
+            var allArticles = JsonConvert.DeserializeObject<List<Article>>(articleString);
+
+            var article = allArticles.Where(a => a.Id == id).FirstOrDefault();
+            var response = new ArticleModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Body = article.Body,
+                PublishedDate = DateTime.Now
+            };
+
+            return response;
+        }
+
+        return new ArticleModel();
+    }
 }
