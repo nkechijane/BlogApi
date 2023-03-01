@@ -53,23 +53,16 @@ public class ArticleRepository : IArticleRepository
             Body = newArticle.Body,
             Published = DateTime.Now
         };
-        var serializedArticle = JsonConvert.SerializeObject(article);
-        
-        byte[] articleToCache = Encoding.UTF8.GetBytes(serializedArticle);
-        await _cache.SetAsync("Article", articleToCache);
-        
+        await Save(article);
+
         return true;
     }
 
     public async Task<ArticleModel> Get(Guid id)
     {
-        byte[] articlesInRedis = await _cache.GetAsync("Article");
-        if ((articlesInRedis?.Count() ?? 0) > 0) 
+        var article = GetArticleById(id.ToString()).Result;
+        if (string.IsNullOrEmpty(article.Body))
         {
-            var articleString = Encoding.UTF8.GetString(articlesInRedis);
-            var allArticles = JsonConvert.DeserializeObject<List<Article>>(articleString);
-
-            var article = allArticles.Where(a => a.Id == id).FirstOrDefault();
             var response = new ArticleModel()
             {
                 Id = article.Id,
@@ -77,10 +70,45 @@ public class ArticleRepository : IArticleRepository
                 Body = article.Body,
                 PublishedDate = DateTime.Now
             };
-
             return response;
         }
-
         return new ArticleModel();
+    }
+
+    public async Task<bool> Update(ArticleModel newArticle)
+    {
+        var articleToUpdate = GetArticleById(newArticle.Id.ToString()).Result;
+        if (string.IsNullOrEmpty(articleToUpdate.Body))
+            return false;
+
+        articleToUpdate.LastEdited = DateTime.Now;
+        articleToUpdate.Title = newArticle.Title;
+        articleToUpdate.Body = newArticle.Body;
+        
+        _cache.Remove(newArticle.Id.ToString());
+        await Save(articleToUpdate);
+        return true;
+    }
+
+    private async Task<Article> GetArticleById(string id)
+    {
+        byte[] articlesInRedis = await _cache.GetAsync(id);
+        if ((articlesInRedis?.Count() ?? 0) > 0)
+        {
+            var articleString = Encoding.UTF8.GetString(articlesInRedis);
+            var allArticles = JsonConvert.DeserializeObject<List<Article>>(articleString);
+
+            return allArticles.FirstOrDefault();
+        }
+
+        return new Article();
+    }
+
+    private async Task Save(Article newArticle)
+    {
+        var serializedArticle = JsonConvert.SerializeObject(newArticle);
+
+        byte[] articleToCache = Encoding.UTF8.GetBytes(serializedArticle);
+        await _cache.SetAsync(newArticle.Id.ToString(), articleToCache);
     }
 }
