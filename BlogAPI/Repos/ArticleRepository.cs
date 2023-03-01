@@ -43,4 +43,21 @@ public class ArticleRepository : IArticleRepository
         
         return new List<ArticleModel>();
     }
+
+    public async Task<bool> Add(SaveArticleModel newArticle)
+    {
+        var article = new Article()
+        {
+            Id = Guid.NewGuid(),
+            Title = newArticle.Title,
+            Body = newArticle.Body,
+            Published = DateTime.Now
+        };
+        var serializedArticle = JsonConvert.SerializeObject(article);
+        
+        byte[] articleToCache = Encoding.UTF8.GetBytes(serializedArticle);
+        await _cache.SetAsync("Article", articleToCache);
+        
+        return true;
+    }
 }
