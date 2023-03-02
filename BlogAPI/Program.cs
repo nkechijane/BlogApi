@@ -1,29 +1,21 @@
-using System.Configuration;
-using Alachisoft.NCache.Caching.Distributed;
-using BlogAPI.Context;
+using BlogAPI;
 using BlogAPI.Repos;
-using DefaultNamespace;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//    options.UseInMemoryDatabase("BlogDb"));
-
+var config = new ConfigurationBuilder()
+    .AddEnvironmentVariables()
+    .Build().Get<BlogConfig>();
+builder.Services.AddSingleton(config);
 builder.Services.AddControllers();
-builder.Services.AddNCacheDistributedCache(configuration =>
+/*builder.Services.AddNCacheDistributedCache(configuration =>
 {
     configuration.CacheName = "BlogClusterCache";
     configuration.EnableLogs = true;
     configuration.ExceptionsEnabled = true;
-});
+});*/
 //builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
-builder.Services.AddScoped<IMemoryCache, MemoryCache>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -12,21 +12,12 @@ RUN dotnet build BlogAPI -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish BlogAPI -c Release -o /app/publish
-#RUN dotnet new tool-manifest
-#RUN dotnet tool install dotnet-ef
 WORKDIR /app
 RUN dotnet build
-#RUN dotnet ef migrations add InitialCreate
-#RUN dotnet ef database update
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENV ASPNETCORE_URLS=http://+
-ENV CONN_STRING=EMPTY_BY_DEFAULT
-#RUN dotnet add package Microsoft.EntityFrameworkCore.Sqlite
-#RUN dotnet add package Microsoft.EntityFrameworkCore.Design
-#RUN dotnet ef database update BlogAPI.dll
+ENV REDIS_CACHE_CONN_STRING=EMPTY_BY_DEFAULT
 ENTRYPOINT ["dotnet", "BlogAPI.dll"]
-
-# docker run -it -p 3010:80 -e CONN_STRING=<your_con_string> <imagename> 
