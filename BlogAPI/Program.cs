@@ -8,12 +8,6 @@ var config = new ConfigurationBuilder()
     .Build().Get<BlogConfig>();
 builder.Services.AddSingleton(config);
 builder.Services.AddControllers();
-/*builder.Services.AddNCacheDistributedCache(configuration =>
-{
-    configuration.CacheName = "BlogClusterCache";
-    configuration.EnableLogs = true;
-    configuration.ExceptionsEnabled = true;
-});*/
 //builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 
@@ -22,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("AzureRedisUrl");
+    options.Configuration = config.REDIS_CACHE_CONN_STRING;
     options.InstanceName = "master";
 });
 
