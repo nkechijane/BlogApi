@@ -8,7 +8,7 @@ var config = new ConfigurationBuilder()
     .Build().Get<BlogConfig>();
 builder.Services.AddSingleton(config);
 builder.Services.AddControllers();
-//builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

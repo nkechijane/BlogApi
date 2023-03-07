@@ -16,20 +16,6 @@ public class ArticleController : ControllerBase
         _articleRepository = articleRepository;
     }
 
-    /*[HttpGet]
-    public IActionResult GetAll()
-    {
-        try
-        {
-            var response = _articleRepository.GetAll();
-            return response.Any() ? Ok(response) : Ok("No Article found");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }*/
-
     [HttpPost]
     public IActionResult Add([FromBody]SaveArticleModel payload)
     {
