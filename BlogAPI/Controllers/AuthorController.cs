@@ -44,4 +44,17 @@ public class AuthorController : ControllerBase
         }
     }
     
+    [HttpPut]
+    public IActionResult Update([FromBody]AuthorModel payload)
+    {
+        try
+        {
+            var response = _authorRepository.Update(payload);
+            return response.Result ? Ok("Updated Successfully!") : BadRequest("Please check the payload and try again.");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

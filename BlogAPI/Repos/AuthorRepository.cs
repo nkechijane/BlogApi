@@ -52,9 +52,20 @@ public class AuthorRepository : IAuthorRepository
         return new AuthorModel();
     }
 
-    public Task<bool> Update(AuthorModel authorToUpdate)
+    public async Task<bool> Update(AuthorModel newAuthor)
     {
-        throw new NotImplementedException();
+        var authorToUpdate = GetAuthorById(newAuthor.Id.ToString()).Result;
+        if (string.IsNullOrEmpty(authorToUpdate.FirstName))
+            return false;
+        
+        authorToUpdate.UpdatedOn = DateTime.Now;
+        authorToUpdate.FirstName = newAuthor.FirstName;
+        authorToUpdate.MiddleName = newAuthor.MiddleName;
+        authorToUpdate.LastName = newAuthor.LastName;
+        
+        _cache.Remove(newAuthor.Id.ToString());
+        await Save(authorToUpdate);
+        return true;
     }
     
     private async Task<Author> GetAuthorById(string id)
