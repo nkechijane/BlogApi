@@ -3,16 +3,19 @@ using BlogAPI.DTOs;
 using BlogAPI.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace BlogAPI.Repos;
 
 public class AuthorRepository : IAuthorRepository
 {
     private readonly IDistributedCache _cache;
+    private readonly BlogConfig _blogConfig;
 
-    public AuthorRepository(IDistributedCache cache)
+    public AuthorRepository(IDistributedCache cache, BlogConfig blogConfig)
     {
         _cache = cache;
+        _blogConfig = blogConfig;
     }
 
     public async Task<string> Add(SaveAuthorModel newAuthor)
@@ -30,9 +33,16 @@ public class AuthorRepository : IAuthorRepository
         return author.Id.ToString();
     }
 
-    public Task<IEnumerable<AuthorModel>> GetAll()
+    public async Task<List<AuthorModel>> GetAll()
     {
-        throw new NotImplementedException();
+        var response = new List<AuthorModel>();
+        var allAuthor = await FilterByKey("*",0,true);
+        foreach (var key in allAuthor)
+        {
+            var author = await Get(new Guid(key));
+            response.Add(author);
+        }
+        return response;
     }
 
     public async Task<AuthorModel> Get(Guid id)
@@ -87,5 +97,33 @@ public class AuthorRepository : IAuthorRepository
 
         byte[] authorToCache = Encoding.UTF8.GetBytes(serializedAuthor);
         await _cache.SetAsync(newAuthor.Id.ToString(), authorToCache);
+    }
+    
+    private async Task<List<string>> FilterByKey(string keyStr, int dbIndex = 0, bool trimRedisInstanceName = true)
+    {
+        var conn = await ConnectionMultiplexer.ConnectAsync(_blogConfig.REDIS_CACHE_CONN_STRING);
+
+        var db = conn.GetDatabase(dbIndex);
+        var listResult = new List<string>();
+
+        foreach (var endPoint in conn.GetEndPoints())
+        {
+            var server = conn.GetServer(endPoint);
+            var allkeys = server.Keys(dbIndex, keyStr);
+            foreach (var key in allkeys)
+            {
+                if (trimRedisInstanceName)
+                {
+                    listResult.Add(key.ToString().Replace("master", ""));
+                }
+                else
+                {
+                    listResult.Add(key);
+                }
+                //var val = db.StringGet(key);
+                Console.WriteLine($"key: {key}, value:");
+            }
+        }
+        return listResult;
     }
 }

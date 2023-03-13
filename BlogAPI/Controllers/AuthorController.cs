@@ -1,5 +1,4 @@
 using BlogAPI.DTOs;
-using BlogAPI.Models;
 using BlogAPI.Repos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +22,20 @@ public class AuthorController : ControllerBase
         {
             var response = _authorRepository.Add(payload);
             return !string.IsNullOrEmpty(response.Result) ? Ok(response.Result) : BadRequest("Unsuccessful!");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        try
+        {
+            var response = await _authorRepository.GetAll();
+            return response.Any() ? Ok(response) : BadRequest("No Author found");
         }
         catch (Exception e)
         {
