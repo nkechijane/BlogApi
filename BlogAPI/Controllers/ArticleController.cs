@@ -22,13 +22,27 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Add(payload);
-            return !string.IsNullOrEmpty(response.Result) ? Ok(response.Result) : BadRequest("Unsuccessful!");
+            return !string.IsNullOrEmpty(response.Result) ? Ok(response.Result) : BadRequest("Request was unsuccessful!");
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
         
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        try
+        {
+            var response = await _articleRepository.GetAll();
+            return response.Any() ? Ok(response) : BadRequest("No Article found");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpGet("{id}")]

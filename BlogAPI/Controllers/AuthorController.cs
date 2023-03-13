@@ -21,7 +21,7 @@ public class AuthorController : ControllerBase
         try
         {
             var response = _authorRepository.Add(payload);
-            return !string.IsNullOrEmpty(response.Result) ? Ok(response.Result) : BadRequest("Unsuccessful!");
+            return !string.IsNullOrEmpty(response.Result) ? Ok(response.Result) : BadRequest("Request was unsuccessful!");
         }
         catch (Exception e)
         {
