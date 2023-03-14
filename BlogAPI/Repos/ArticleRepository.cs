@@ -80,7 +80,7 @@ public class ArticleRepository : IArticleRepository
     {
         var conn = await ConnectionMultiplexer.ConnectAsync(_blogConfig.REDIS_CACHE_CONN_STRING);
 
-        //var db = conn.GetDatabase(dbIndex);
+        var db = conn.GetDatabase(dbIndex);
         var listResult = new List<string>();
 
         foreach (var endPoint in conn.GetEndPoints())
