@@ -37,7 +37,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = await _articleRepository.GetAll();
-            return response.Any() ? Ok(response) : BadRequest("No Article found");
+            return response.Any() ? Ok(response) : Ok(new List<ArticleModel>());
         }
         catch (Exception e)
         {
@@ -51,7 +51,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Get(id);
-            return !string.IsNullOrEmpty(response.Result.Body) ? Ok(response.Result) : BadRequest("Please check the ID and try again.");
+            return !string.IsNullOrEmpty(response.Result.Body) ? Ok(response.Result) : NotFound("Please check the ID and try again.");
         }
         catch (Exception e)
         {
@@ -65,7 +65,7 @@ public class ArticleController : ControllerBase
         try
         {
             var response = _articleRepository.Update(payload);
-            return response.Result ? Ok("Updated Successfully!") : BadRequest("Please check the payload and try again.");
+            return response.Result ? Ok("Updated Successfully!") : NotFound("Please check the payload and try again.");
         }
         catch (Exception e)
         {

@@ -41,12 +41,12 @@ public class ArticleRepository : IArticleRepository
         };
         await Save(article);
 
-        return article.Id.ToString();
+        return ("Article Added Successfully");
     }
 
     public async Task<ArticleModel> Get(Guid id)
     {
-        var article = GetArticleById(id.ToString()).Result;
+        var article = await GetArticleById(id.ToString());
         if (!string.IsNullOrEmpty(article.Body))
         {
             var response = new ArticleModel()
@@ -80,7 +80,7 @@ public class ArticleRepository : IArticleRepository
     {
         var conn = await ConnectionMultiplexer.ConnectAsync(_blogConfig.REDIS_CACHE_CONN_STRING);
 
-        var db = conn.GetDatabase(dbIndex);
+        //var db = conn.GetDatabase(dbIndex);
         var listResult = new List<string>();
 
         foreach (var endPoint in conn.GetEndPoints())

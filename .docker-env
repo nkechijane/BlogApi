@@ -1,1 +1,1 @@
-REDIS_CACHE_CONN_STRING='test-redis-blog.redis.cache.windows.net:6380,password=NssCHxrvSQq8yDUQTWo4bLmUPgAgFuyTUAzCaG8yDhg=,ssl=True,abortConnect=False'
+REDIS_CACHE_CONN_STRING='test-redis-blog2.redis.cache.windows.net:6380,password=OY6GOvt4Cg0KTKHT0CYNh2BV4Rgu0l91BAzCaBAwF88=,ssl=True,abortConnect=False'

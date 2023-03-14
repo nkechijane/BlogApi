@@ -35,7 +35,7 @@ public class AuthorController : ControllerBase
         try
         {
             var response = await _authorRepository.GetAll();
-            return response.Any() ? Ok(response) : BadRequest("No Author found");
+            return response.Any() ? Ok(response) : Ok(new List<AuthorModel>());
         }
         catch (Exception e)
         {

@@ -4,7 +4,6 @@ using BlogAPI.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-
 namespace BlogAPI.Repos;
 
 public class AuthorRepository : IAuthorRepository
@@ -30,7 +29,7 @@ public class AuthorRepository : IAuthorRepository
         };
         await Save(author);
 
-        return author.Id.ToString();
+        return ("Author Added Successfully");
     }
 
     public async Task<List<AuthorModel>> GetAll()
@@ -47,7 +46,7 @@ public class AuthorRepository : IAuthorRepository
 
     public async Task<AuthorModel> Get(Guid id)
     {
-        var author = GetAuthorById(id.ToString()).Result;
+        var author = await GetAuthorById(id.ToString());
         if (!string.IsNullOrEmpty(author.FirstName))
         {
             var response = new AuthorModel()
