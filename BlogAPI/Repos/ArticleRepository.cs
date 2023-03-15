@@ -11,11 +11,13 @@ public class ArticleRepository : IArticleRepository
 {
     private readonly IDistributedCache _cache;
     private readonly BlogConfig _blogConfig;
+    private readonly IConfiguration _conn;
 
-    public ArticleRepository(IDistributedCache cache, BlogConfig blogConfig)
+    public ArticleRepository(IDistributedCache cache, BlogConfig blogConfig, IConfiguration conn)
     {
         _cache = cache;
         _blogConfig = blogConfig;
+        _conn = conn;
     }
 
     public async Task<List<ArticleModel>> GetAll()
@@ -78,9 +80,9 @@ public class ArticleRepository : IArticleRepository
     
     private async Task<List<string>> FilterByKey(string keyStr, int dbIndex = 0, bool trimRedisInstanceName = true)
     {
-        var conn = await ConnectionMultiplexer.ConnectAsync(_blogConfig.REDIS_CACHE_CONN_STRING);
+        var conn = await ConnectionMultiplexer.ConnectAsync(_conn["conn"]);//_blogConfig.REDIS_CACHE_CONN_STRING);
 
-        var db = conn.GetDatabase(dbIndex);
+       // var db = conn.GetDatabase(dbIndex);
         var listResult = new List<string>();
 
         foreach (var endPoint in conn.GetEndPoints())

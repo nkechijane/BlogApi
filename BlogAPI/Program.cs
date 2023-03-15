@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = config.REDIS_CACHE_CONN_STRING;
+    options.Configuration = builder.Configuration["conn"];//config.REDIS_CACHE_CONN_STRING;
     options.InstanceName = "master";
 });
 
